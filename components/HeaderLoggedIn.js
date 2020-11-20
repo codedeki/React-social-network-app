@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link } from 'react-router-dom';
+import DispatchContext from '../app/DispatchContext';
 
 function HeaderLoggedIn(props) {
+  const appDispatch = useContext(DispatchContext);
 
   function handleLogout() {
-    props.setLoggedIn(false);
+    appDispatch({type: "logout"})
     //remove local storage info upon logout
     localStorage.removeItem("socialappToken")
     localStorage.removeItem("socialappUsername")

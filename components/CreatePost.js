@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Page from '../components/Page';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
+import DispatchContext from '../app/DispatchContext';
 
 function CreatePost(props) {
   const [title, setTitle] = useState();
   const [body, setBody] = useState();
-
+  const appDispatch = useContext(DispatchContext);
+  
   async function handleSubmit(e) {
     e.preventDefault();
     const postUrl = "/create-post";
     try {
       const response = await axios.post(postUrl, {title, body, token: localStorage.getItem("socialappToken")});
-      props.addFlashMessage("Congrats, you successfully created a post!")
+      appDispatch({type: "FlashMessage", value: "Congrats, you created a new post!"})
       props.history.push(`/post/${response.data}`)
       console.log("new post created")
     } catch (e) {

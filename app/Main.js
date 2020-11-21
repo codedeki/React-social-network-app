@@ -1,5 +1,6 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { useImmerReducer } from "use-immer";
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:8080';
@@ -22,24 +23,47 @@ import FlashMessages from '../components/FlashMessages';
 function Main() {
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("socialappToken")),
-    flashMessages: []
+    flashMessages: [],
+    user: {
+      token: localStorage.getItem("complexappToken"),
+      username: localStorage.getItem("complexappUsername"),
+      avatar: localStorage.getItem("complexappAvatar")
+    }
   }
 
-  function ourReducer(state, action) {
+  function ourReducer(draft, action) {
     switch (action.type) {
       case "login":
-        return {loggedIn: true, flashMessages: state.flashMessages}
+        draft.loggedIn = true;
+        draft.user = action.data
+        break
+        // return {loggedIn: true, flashMessages: state.flashMessages}
       case "logout":
-        return {loggedIn: false, flashMessages: state.flashMessages}
-      case "flashMessages":
-        return {loggedIn: state.loggedIn, flashMessage: state.flashMessages.concat(action.value)}
-      default:
-        break;
+        // return {loggedIn: false, flashMessages: state.flashMessages}
+        draft.loggedIn = false;
+        break
+      case "flashMessage":
+        // return {loggedIn: state.loggedIn, flashMessages: state.flashMessages.concat(action.value)}
+        draft.flashMessages.push(action.value)
+        break
     }
   }
 
   //use Reducer instead of useState
-  const [state, dispatch] = useReducer(ourReducer, initialState);
+  const [state, dispatch] = useImmerReducer(ourReducer, initialState);
+
+  useEffect(() => {
+    if (state.loggedIn) {
+      localStorage.setItem("socialappToken", state.user.token);
+      localStorage.setItem("socialappUsername", state.user.username);
+      localStorage.setItem("socialappAvatar", state.user.avatar);
+    } else {
+      //remove local storage info upon logout
+      localStorage.removeItem("socialappToken");
+      localStorage.removeItem("socialappUsername");
+      localStorage.removeItem("socialappAvatar");
+    }
+  }, [state.loggedIn])
 
   // const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem("socialappToken")));
   // const [flashMessages, setFlashMessages] = useState([]);

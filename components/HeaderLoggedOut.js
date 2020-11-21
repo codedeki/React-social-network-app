@@ -13,10 +13,7 @@ function HeaderLoggedOut(props) {
     try {
       const response = await axios.post(postUrl, {username, password})
       if (response.data) {
-        localStorage.setItem("socialappToken", response.data.token);
-        localStorage.setItem("socialappUsername", response.data.username);
-        localStorage.setItem("socialappAvatar", response.data.avatar);
-        appContext({type: "login"});
+        appContext({type: "login", data: response.data});
       } else {
         console.log("incorrect username or password.")
       }

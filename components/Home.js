@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import Page from './Page';
-import StateContext from '../app/StateContext';
+import StateContext from '../StateContext';
 
 function Home(props) {
 

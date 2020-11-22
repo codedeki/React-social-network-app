@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import Page from '../components/Page';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
-import DispatchContext from '../app/DispatchContext';
-import StateContext from '../app/StateContext';
+import DispatchContext from '../DispatchContext';
+import StateContext from '../StateContext';
 
 function CreatePost(props) {
   const [title, setTitle] = useState();
@@ -20,7 +20,7 @@ function CreatePost(props) {
       props.history.push(`/post/${response.data}`)
       console.log("new post created")
     } catch (e) {
-      console.log("There was a problem")
+      console.log("There was a problem creating post")
     }
   }
 

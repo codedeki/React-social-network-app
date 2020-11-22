@@ -6,8 +6,8 @@ import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:8080';
 
 //Our useReducer and Context 
-import StateContext from './StateContext';
-import DispatchContext from './DispatchContext';
+import StateContext from '../StateContext';
+import DispatchContext from '../DispatchContext';
 
 // My Components
 import Header from '../components/Header';
@@ -19,6 +19,7 @@ import Terms from '../components/Terms';
 import CreatePost from '../components/CreatePost';
 import ViewSinglePost from '../components/ViewSinglePost';
 import FlashMessages from '../components/FlashMessages';
+import Profile from '../components/Profile';
 
 function Main() {
   const initialState = {
@@ -79,6 +80,9 @@ function Main() {
           <FlashMessages messages={state.flashMessages} />
           <Header />
             <Switch>
+              <Route path="/profile/:username">
+                <Profile/>
+              </Route>
               <Route path="/" exact>
                 {state.loggedIn ? <Home/> : <HomeGuest/>}
               </Route>

@@ -33,7 +33,7 @@ function Profile() {
     return () => {
       ourRequest.cancel();
     }
-  }, [appState.loggedIn])
+  }, [])
 
   return (
     <Page title="Profile Screen">
@@ -47,10 +47,10 @@ function Profile() {
           Posts: {profileData.counts.postCount}
         </a>
         <a href="#" className="nav-item nav-link">
-          Followers: {profileData.followerCount}
+          Followers: {profileData.counts.followerCount}
         </a>
         <a href="#" className="nav-item nav-link">
-          Following: {profileData.followingCount}
+          Following: {profileData.counts.followingCount}
         </a>
       </div>
 

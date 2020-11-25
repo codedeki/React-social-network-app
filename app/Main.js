@@ -1,7 +1,7 @@
 import React, { useState, useReducer, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useImmerReducer } from "use-immer";
-import {BrowserRouter, Switch, Route} from 'react-router-dom'
+import {BrowserRouter, Switch, Route, withRouter} from 'react-router-dom'
 import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:8080';
 
@@ -20,6 +20,8 @@ import CreatePost from '../components/CreatePost';
 import ViewSinglePost from '../components/ViewSinglePost';
 import FlashMessages from '../components/FlashMessages';
 import Profile from '../components/Profile';
+import EditPost from '../components/EditPost';
+import NotFound from "../components/NotFound";
 
 function Main() {
   const initialState = {
@@ -37,16 +39,22 @@ function Main() {
       case "login":
         draft.loggedIn = true;
         draft.user = action.data
-        break
+        return
         // return {loggedIn: true, flashMessages: state.flashMessages}
       case "logout":
         // return {loggedIn: false, flashMessages: state.flashMessages}
-        draft.loggedIn = false;
-        break
+        draft.loggedIn = false
+        draft.user = {
+          username: "",
+          token: "",
+          avatar: ""
+        }
+        window.location.href = "/"
+        return
       case "flashMessage":
         // return {loggedIn: state.loggedIn, flashMessages: state.flashMessages.concat(action.value)}
         draft.flashMessages.push(action.value)
-        break
+        return
     }
   }
 
@@ -66,6 +74,27 @@ function Main() {
     }
   }, [state.loggedIn])
 
+  // Check if token has expired or not on first render
+  // useEffect(() => {
+  //   if (state.loggedIn) {
+  //     const ourRequest = axios.CancelToken.source();
+  //     async function fetchResults() {
+  //       try {
+  //         const response = await axios.post('/checkToken', { token: state.user.token }, { cancelToken: ourRequest.token });
+  //         if (!response.data) {
+  //           //token no longer valid
+  //           dispatch({ type: 'logout' });
+  //           dispatch({ type: 'flashMessage', value: 'Your session has expired. Please log in again.' });
+  //         }
+  //       } catch (error) {
+  //         console.log('There was a problem or the request was canceled');
+  //       }
+  //     }
+  //     fetchResults();
+  //     return () => ourRequest.cancel();
+  //   }
+  // }, []);
+
   // const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem("socialappToken")));
   // const [flashMessages, setFlashMessages] = useState([]);
 
@@ -81,7 +110,7 @@ function Main() {
           <Header />
             <Switch>
               <Route path="/profile/:username">
-                <Profile/>
+                {state.loggedIn ? <Profile/> : <HomeGuest/>}
               </Route>
               <Route path="/" exact>
                 {state.loggedIn ? <Home/> : <HomeGuest/>}
@@ -93,10 +122,16 @@ function Main() {
                 <Terms/>
               </Route>
               <Route path="/create-post">
-                <CreatePost/>
+                {state.loggedIn ? <CreatePost/> : <HomeGuest/>}
               </Route>
-              <Route path="/post/:id">
-                <ViewSinglePost/>
+              <Route path="/post/:id/edit" exact>
+                {state.loggedIn ? <EditPost/> : <HomeGuest/>}
+              </Route>
+              <Route path="/post/:id" exact>
+                {state.loggedIn ? <ViewSinglePost/> : <HomeGuest/>}
+              </Route>
+              <Route>
+                <NotFound/>
               </Route>
             </Switch>
           <Footer/>

@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from "react";
 import Page from './Page';
 import StateContext from '../StateContext';
 
-function Home(props) {
+function Home() {
 
   const appState = useContext(StateContext);
 

@@ -99,25 +99,25 @@ function Main() {
   }, [state.loggedIn])
 
   // Check if token has expired or not on first render
-  // useEffect(() => {
-  //   if (state.loggedIn) {
-  //     const ourRequest = axios.CancelToken.source();
-  //     async function fetchResults() {
-  //       try {
-  //         const response = await axios.post('/checkToken', { token: state.user.token }, { cancelToken: ourRequest.token });
-  //         if (!response.data) {
-  //           //token no longer valid
-  //           dispatch({ type: 'logout' });
-  //           dispatch({ type: 'flashMessage', value: 'Your session has expired. Please log in again.' });
-  //         }
-  //       } catch (error) {
-  //         console.log('There was a problem or the request was canceled');
-  //       }
-  //     }
-  //     fetchResults();
-  //     return () => ourRequest.cancel();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (state.loggedIn) {
+      const ourRequest = axios.CancelToken.source();
+      async function fetchResults() {
+        try {
+          const response = await axios.post('/checkToken', { token: state.user.token }, { cancelToken: ourRequest.token });
+          if (!response.data) {
+            //token no longer valid
+            dispatch({ type: 'logout' });
+            dispatch({ type: 'flashMessage', value: 'Your session has expired. Please log in again.' });
+          }
+        } catch (error) {
+          console.log('There was a problem or the request was canceled');
+        }
+      }
+      fetchResults();
+      return () => ourRequest.cancel();
+    }
+  }, []);
 
   // const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem("socialappToken")));
   // const [flashMessages, setFlashMessages] = useState([]);
